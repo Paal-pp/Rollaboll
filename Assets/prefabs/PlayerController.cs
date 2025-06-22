@@ -6,18 +6,19 @@ public class PlayerController : MonoBehaviour
 {
     public float speed = 10f;
     private int score = 0;
-
+    public int winCount = 10;    // 总目标数量（拾取物体）
+    public GameObject winPanel; 
     private Rigidbody rb;
 
     public Text scoreText;  // ✅ 是 UnityEngine.UI.Text 类型
-    public Text winText;
+
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         score = 0;
         UpdateScore();
-        winText.gameObject.SetActive(false);  // 先隐藏胜利文本
+        winPanel.SetActive(false);  // 初始隐藏
     }
 
     void FixedUpdate()
@@ -44,17 +45,19 @@ public class PlayerController : MonoBehaviour
         scoreText.text = "Score: " + score.ToString();
         if (score >= 10)
         {
-            winText.text = "You Win!";
-            winText.gameObject.SetActive(true);
+            winPanel.SetActive(true);  // 胜利时显示面板
         }
     }
 
     void Update()
 {
     // 如果小球掉出地图（Y 轴太低），重启当前场景
-    if (transform.position.y < -5f)
+if (transform.position.y < -5f)  // 根据你地图高度设定，比如掉出地板
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        // 重置位置与速度
+        transform.position = new Vector3(0, 1, 0);  // 回到地图中央
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
+        GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
     }
 }
 }
